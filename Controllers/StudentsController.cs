@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentManagementSystem.DTOs;
+using StudentManagementSystem.Data;
 using StudentManagementSystem.Models;
 using StudentManagementSystem.Repositories;
 
@@ -12,21 +14,44 @@ namespace StudentManagementSystem.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly IStudentRepository _repo;
-        public StudentsController(IStudentRepository repo) => _repo = repo;
+        private readonly AppDbContext _context;
+
+        public StudentsController(
+            IStudentRepository repo,
+            AppDbContext context)
+        {
+            _repo = repo;
+            _context = context;
+        }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? search = null)
         {
-            var students = await _repo.GetAllAsync();
-            var result = students.Select(s => new StudentResponseDto
+            var query = _context.Students
+                .Where(s => s.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+                query = query.Where(s =>
+                    s.FirstName.Contains(search) ||
+                    s.LastName.Contains(search) ||
+                    s.Email.Contains(search));
+
+            var total = await query.CountAsync();
+            var students = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return Ok(new PagedResult<Student>
             {
-                Id = s.Id,
-                FullName = $"{s.FirstName} {s.LastName}",
-                Email = s.Email,
-                PhoneNumber = s.PhoneNumber,
-                EnrollmentCount = s.Enrollments.Count
+                Data = students,
+                TotalCount = total,
+                Page = page,
+                PageSize = pageSize
             });
-            return Ok(result);
         }
 
         [HttpGet("{id}")]
