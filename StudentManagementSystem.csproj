@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\**" />
+    <Compile Remove="StudentManagementSystem.Tests\**" />
+    <Content Remove="Services\**" />
+    <Content Remove="StudentManagementSystem.Tests\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="StudentManagementSystem.Tests\**" />
+    <None Remove="Services\**" />
+    <None Remove="StudentManagementSystem.Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Properties\launchSettings.json" />
   </ItemGroup>
 
@@ -29,10 +40,6 @@
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

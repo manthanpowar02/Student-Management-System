@@ -1,3 +1,5 @@
+![CI](https://github.com/manthanpowar02/student-management-system/actions/workflows/ci.yml/badge.svg)
+
 # student-management-system
 
 ## 📈 Performance Results

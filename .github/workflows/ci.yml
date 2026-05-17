@@ -1,13 +1,11 @@
-name: CI - Build and Test
+﻿name: CI - Build and Test
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build-and-test:
@@ -22,13 +20,13 @@ jobs:
     - name: Setup .NET 8
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '8.0.x'
 
     - name: Restore Dependencies
       run: dotnet restore
 
-    - name: Build Project
+    - name: Build Solution
       run: dotnet build --no-restore --configuration Release
 
-    - name: Run Tests
-      run: dotnet test --no-build --configuration Release
+    - name: Run Unit Tests
+      run: dotnet test --no-build --configuration Release --verbosity normal
